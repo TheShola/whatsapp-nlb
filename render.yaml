@@ -3,7 +3,7 @@ services:
   - type: web
     name: tin-and-tain-bot
     runtime: node
-    buildCommand: npm ci --only=production
+    buildCommand: npm ci --omit=dev
     startCommand: node src/index.js
     healthCheckPath: /health
     envVars:
@@ -48,7 +48,11 @@ services:
         sync: false
       - key: PICKUP_PHONE
         sync: false
- 
+      - key: PICKUP_LAT
+        sync: false
+      - key: PICKUP_LNG
+        sync: false
+
   - type: redis
     name: tin-and-tain-redis
     plan: free
