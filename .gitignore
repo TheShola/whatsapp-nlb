@@ -1,3 +1,5 @@
 node_modules/
 .env
 *.log
+ngrok-v3-stable-linux-amd64.tgz
+package-lock.json
