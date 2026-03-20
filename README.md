@@ -218,14 +218,3 @@ This creates two tables and three analytics views:
 | `order.complete` | Delivered + feedback prompt |
 
 ---
-
-## Build Roadmap
-
-| Step | Feature | Status |
-|------|---------|--------|
-| 1 | Twilio webhook + Claude conversation | ✅ Done |
-| 2 | Redis session persistence | ✅ Done |
-| 3 | Real Paystack payment links + webhook | ✅ Done |
-| 4 | Real Chowdeck delivery fee + rider dispatch | ✅ Done |
-| 5 | Chowdeck webhooks → live WhatsApp status updates | ✅ Done |
-| 6 | Order storage (Airtable / Supabase) | 🔜 Next |
