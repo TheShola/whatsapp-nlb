@@ -1,0 +1,55 @@
+# render.yaml — one-click deploy on Render (https://render.com)
+services:
+  - type: web
+    name: tin-and-tain-bot
+    runtime: node
+    buildCommand: npm ci --only=production
+    startCommand: node src/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: tin-and-tain-redis
+          property: connectionString
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_WHATSAPP_FROM
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: AIRTABLE_API_KEY
+        sync: false
+      - key: AIRTABLE_BASE_ID
+        sync: false
+      - key: AIRTABLE_ORDERS_TABLE
+        value: Orders
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_CALLBACK_URL
+        sync: false
+      - key: CHOWDECK_API_KEY
+        sync: false
+      - key: CHOWDECK_MERCHANT_REF
+        sync: false
+      - key: CHOWDECK_WEBHOOK_SECRET
+        sync: false
+      - key: PICKUP_ADDRESS
+        sync: false
+      - key: PICKUP_PHONE
+        sync: false
+ 
+  - type: redis
+    name: tin-and-tain-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru

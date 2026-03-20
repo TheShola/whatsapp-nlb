@@ -1,0 +1,62 @@
+# railway.toml
+#
+# SETUP STEPS:
+# 1. Push this repo to GitHub
+# 2. Go to railway.app → New Project → Deploy from GitHub repo
+# 3. In your Railway project, click "+ New" → Database → Redis
+#    Railway will automatically inject REDIS_URL into your environment
+# 4. Add the remaining secret variables below in Railway's dashboard:
+#    Variables tab → Add all marked as SECRET
+# 5. Use your Railway public URL for:
+#    - Twilio sandbox webhook:  https://<your-app>.railway.app/webhook/whatsapp
+#    - Paystack webhook:        https://<your-app>.railway.app/webhook/paystack
+
+[build]
+builder = "DOCKERFILE"
+
+[deploy]
+startCommand = "node src/index.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 10
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# ── Environment variables ─────────────────────────────────────────────────────
+# "default" values are safe to commit. SECRET ones must be set in the dashboard.
+
+[variables]
+
+# Server
+NODE_ENV = "production"
+PORT = "3000"
+
+# Redis — automatically injected by Railway when you add the Redis plugin
+# REDIS_URL = "set automatically by Railway Redis plugin"
+
+# Twilio — SECRET: set in Railway dashboard
+# TWILIO_ACCOUNT_SID    = ""
+# TWILIO_AUTH_TOKEN     = ""
+# TWILIO_WHATSAPP_FROM  = "whatsapp:+14155238886"
+
+# Anthropic — SECRET: set in Railway dashboard
+# ANTHROPIC_API_KEY = ""
+
+# Paystack — SECRET: set in Railway dashboard
+# PAYSTACK_SECRET_KEY   = ""
+# PAYSTACK_CALLBACK_URL = "https://<your-app>.railway.app/payment-success"
+
+# Airtable — SECRET: set in Railway dashboard
+# AIRTABLE_API_KEY       = ""
+# AIRTABLE_BASE_ID       = ""
+# AIRTABLE_ORDERS_TABLE  = "Orders"
+
+# Supabase — SECRET: set in Railway dashboard
+# SUPABASE_URL              = ""
+# SUPABASE_SERVICE_ROLE_KEY = ""
+
+# Chowdeck — SECRET: set in Railway dashboard
+# CHOWDECK_API_KEY          = ""
+# CHOWDECK_MERCHANT_REF     = ""
+# CHOWDECK_WEBHOOK_SECRET   = ""
+# PICKUP_ADDRESS             = "La Vida Estate Lekki"
+# PICKUP_PHONE               = "+2347026709447"
