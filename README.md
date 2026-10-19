@@ -1,5 +1,8 @@
 # Tara: WhatsApp Ordering Bot
 
+A production-ready WhatsApp order bot.
+Built with **Node.js + Express**, powered by **Claude AI (Tara)**, with **Chowdeck** delivery fee checks and **Paystack** payments.
+
 A reference implementation that lets customers browse, order and pay entirely inside WhatsApp.
 
 I built Tara to show a client the full flow end to end. A customer messages a business's WhatsApp number, the bot turns the conversation into an order, takes payment through **Paystack**, and confirms the order back in the chat. It's built in JavaScript (Node.js) on the **Twilio WhatsApp API**, and it's driven entirely by webhooks.
@@ -113,28 +116,6 @@ src/
   menu.js          Product catalogue
 ```
 
----
-
-## What I'd add next
-
-- A persistent database for orders and conversation state (currently in memory)
-- An admin view so the business can see and fulfil orders
-- WhatsApp interactive list and button messages instead of numbered replies
-- Delivery address capture and delivery fee calculation
-- Order status updates (dispatched, delivered) sent back to the customer
-
----
-
-## Author
-
-**Shola Abimbola** · [LinkedIn](https://linkedin.com/in/shola-abimbola) · [GitHub](https://github.com/TheShola)
-
-## License
-
-MIT
-
-A production-ready WhatsApp order bot for Tin and Tain snacks.
-Built with **Node.js + Express**, powered by **Claude AI (Tara)**, with **Chowdeck** delivery fee checks and **Paystack** payments.
 
 ---
 
@@ -351,3 +332,22 @@ This creates two tables and three analytics views:
 | `order.complete` | Delivered + feedback prompt |
 
 ---
+---
+
+## What I'd add next
+
+- A persistent database for orders and conversation state (currently in memory)
+- An admin view so the business can see and fulfil orders
+- WhatsApp interactive list and button messages instead of numbered replies
+- Delivery address capture and delivery fee calculation
+- Order status updates (dispatched, delivered) sent back to the customer
+
+---
+
+## Author
+
+**Shola Abimbola** · [LinkedIn](https://linkedin.com/in/shola-abimbola) · [GitHub](https://github.com/TheShola)
+
+## License
+
+MIT
