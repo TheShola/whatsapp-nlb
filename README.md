@@ -1,4 +1,137 @@
-# 🥜 Tin and Tain — WhatsApp Order Bot
+# Tara: WhatsApp Ordering Bot
+
+A reference implementation that lets customers browse, order and pay entirely inside WhatsApp.
+
+I built Tara to show a client the full flow end to end. A customer messages a business's WhatsApp number, the bot turns the conversation into an order, takes payment through **Paystack**, and confirms the order back in the chat. It's built in JavaScript (Node.js) on the **Twilio WhatsApp API**, and it's driven entirely by webhooks.
+
+---
+
+## Why this exists
+
+Many small businesses in Nigeria already sell through WhatsApp, but by hand. They reply to every message, take orders in chat, send bank details and check transfers themselves. That doesn't scale, and orders get lost.
+
+Tara automates that loop while keeping customers in the app they already use.
+
+---
+
+## How it works
+
+```mermaid
+sequenceDiagram
+    participant C as Customer (WhatsApp)
+    participant T as Twilio
+    participant B as Tara (Express server)
+    participant P as Paystack
+
+    C->>T: "Hi"
+    T->>B: POST /whatsapp (webhook)
+    B->>B: Verify Twilio signature
+    B-->>T: Menu reply
+    T-->>C: Menu
+    C->>T: Picks items and quantities
+    T->>B: POST /whatsapp
+    B->>B: Build order, calculate total
+    B->>P: Initialize transaction
+    P-->>B: Payment link + reference
+    B-->>C: Order summary + payment link
+    C->>P: Pays
+    P->>B: POST /paystack/webhook (charge.success)
+    B->>B: Verify Paystack signature, mark order paid
+    B->>T: Send confirmation
+    T-->>C: "Order confirmed ✅"
+```
+
+### The conversation flow
+
+1. **Greeting:** any message from a new customer returns the menu.
+2. **Ordering:** the customer replies with item numbers and quantities, and the bot builds a cart.
+3. **Confirmation:** the bot sends an order summary and total.
+4. **Payment:** the bot generates a Paystack payment link tied to that order's reference.
+5. **Fulfilment:** when Paystack confirms the payment, the customer gets a confirmation and the business is notified.
+
+---
+
+## Key technical details
+
+- **Webhook-driven, both ways.** Incoming WhatsApp messages arrive as Twilio webhooks, and payment results arrive as Paystack webhooks. There is no polling.
+- **Signatures are verified.** Twilio requests are checked against the `X-Twilio-Signature` header, and Paystack events against `x-paystack-signature` (HMAC SHA-512). Unverified requests are rejected.
+- **Payment status comes from Paystack, not the customer.** An order is only marked paid when the verified `charge.success` webhook arrives, never because the customer says they've paid.
+- **Duplicate events are safe.** Each payment carries a unique reference, so a repeated Paystack webhook can't confirm the same order twice.
+- **Conversation state is per customer,** keyed on the customer's WhatsApp number, so several customers can order at once.
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- A Twilio account with the WhatsApp Sandbox (or an approved WhatsApp sender)
+- A Paystack account (test keys are fine)
+- ngrok, or any tunnel, for local testing
+
+### Setup
+
+```bash
+git clone https://github.com/TheShola/whatsapp-nlb.git
+cd whatsapp-nlb
+npm install
+cp .env.example .env   # then fill in the values below
+npm start
+```
+
+### Environment variables
+
+| Variable | Description |
+|---|---|
+| `TWILIO_ACCOUNT_SID` | From the Twilio console |
+| `TWILIO_AUTH_TOKEN` | From the Twilio console; also used to verify webhook signatures |
+| `TWILIO_WHATSAPP_NUMBER` | For example, `whatsapp:+14155238886` (sandbox) |
+| `PAYSTACK_SECRET_KEY` | From the Paystack dashboard; also used to verify webhook signatures |
+| `PUBLIC_URL` | Your public server URL, used for callbacks |
+| `PORT` | Defaults to `3000` |
+
+> Never commit `.env`. It's in `.gitignore`.
+
+### Connect the webhooks
+
+1. Run `npx ngrok http 3000` and copy the HTTPS URL.
+2. **Twilio:** set the WhatsApp Sandbox "When a message comes in" URL to `https://<your-url>/whatsapp`.
+3. **Paystack:** set the webhook URL in Settings → API Keys & Webhooks to `https://<your-url>/paystack/webhook`.
+4. Message the sandbox number from WhatsApp.
+
+---
+
+## Project structure
+
+```
+src/
+  server.js        Express app and routes
+  whatsapp.js      Incoming message handler and replies
+  conversation.js  Per-customer state (menu → cart → checkout)
+  paystack.js      Payment initialization and webhook handling
+  menu.js          Product catalogue
+```
+
+---
+
+## What I'd add next
+
+- A persistent database for orders and conversation state (currently in memory)
+- An admin view so the business can see and fulfil orders
+- WhatsApp interactive list and button messages instead of numbered replies
+- Delivery address capture and delivery fee calculation
+- Order status updates (dispatched, delivered) sent back to the customer
+
+---
+
+## Author
+
+**Shola Abimbola** · [LinkedIn](https://linkedin.com/in/shola-abimbola) · [GitHub](https://github.com/TheShola)
+
+## License
+
+MIT
 
 A production-ready WhatsApp order bot for Tin and Tain snacks.
 Built with **Node.js + Express**, powered by **Claude AI (Tara)**, with **Chowdeck** delivery fee checks and **Paystack** payments.
